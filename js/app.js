@@ -48,7 +48,7 @@ class SessionsTool {
             let daysSince = options.contains('days-since') ? options.daysSince() : 1;
             for (let start = daysSince; start > 0; start = start - 1) {
                 let end = start - 1;
-                console.log(`${start} to ${end}`);
+                console.log(`Query range days ${start} to ${end}`);
                 let predicates = (0, helpers_1.makeProjectPredicates)(options);
                 predicates.push({
                     type: 'date',
@@ -62,7 +62,6 @@ class SessionsTool {
                     comparison: 'lt',
                     value: `now-${end * 24}h/h`
                 });
-                console.log(predicates);
                 let sessions = yield (0, helpers_1.sessions)(predicates, options);
                 if (sessions.length === 0) {
                     console.log("No new sessions found");
