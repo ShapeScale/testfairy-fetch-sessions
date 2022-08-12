@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -14,7 +18,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -93,9 +97,9 @@ const getTimestamp = (log, recordedAt) => {
     timestamp.setTime(recordedAt.getTime() + logTs);
     return timestamp;
 };
-exports.logs = (sessions, options) => __awaiter(void 0, void 0, void 0, function* () {
+const logs = (sessions, options) => __awaiter(void 0, void 0, void 0, function* () {
     const rootPath = "testfairy-sessions";
-    const encrypt = helpers_1.getRsaEncryptionKey(options);
+    const encrypt = (0, helpers_1.getRsaEncryptionKey)(options);
     sessions.forEach(session => {
         const dirPath = rootPath + session.url;
         const logFilePath = `${dirPath}/session.log`;
@@ -110,4 +114,5 @@ exports.logs = (sessions, options) => __awaiter(void 0, void 0, void 0, function
         save(logs, logFilePath, dirPath);
     });
 });
+exports.logs = logs;
 //# sourceMappingURL=logs.js.map

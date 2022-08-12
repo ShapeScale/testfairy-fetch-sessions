@@ -161,4 +161,8 @@ export class Options {
 	projectId() {
 		return this.key('project-id');
 	}
+
+	daysSince() {
+		return parseInt(this.key('days-since'));
+	}
 }

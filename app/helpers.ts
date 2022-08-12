@@ -45,13 +45,13 @@ export const assertNoMissingParams = (options: any, required: string[]) => {
 	}
 };
 
-const thisMonthString = () => {
-	const date = new Date();
-	const month = date.getUTCMonth() + 1;
-	const monthAsString = (month < 10) ? "0" + month.toString() : month.toString();
-	const year = date.getUTCFullYear();
-	return `${year}-${monthAsString}-01`;
-};
+// const thisMonthString = () => {
+// 	const date = new Date();
+// 	const month = date.getUTCMonth() + 1;
+// 	const monthAsString = (month < 10) ? "0" + month.toString() : month.toString();
+// 	const year = date.getUTCFullYear();
+// 	return `${year}-${monthAsString}-01`;
+// };
 
 export const makeProjectPredicates = (options: Options) => {
 	const predicates = [{
@@ -60,16 +60,16 @@ export const makeProjectPredicates = (options: Options) => {
 		"comparison": "eq",
 		"value": options.projectId()
 	}];
-
-	if (!options.contains('all-time')) {
-		const value = options.contains("this-month") ? thisMonthString() : "now-24h/h";
-		predicates.push({
-			"type":"date",
-			"attribute":"recorded_at",
-			"comparison":"gt",
-			value
-		});
-	}
+	
+	// if (!options.contains('all-time')) {
+	// 	const value = options.contains("this-month") ? thisMonthString() : "now-24h/h";
+	// 	predicates.push({
+	// 		"type":"date",
+	// 		"attribute":"recorded_at",
+	// 		"comparison":"gt",
+	// 		value
+	// 	});
+	// }
 
 	return predicates;
 }

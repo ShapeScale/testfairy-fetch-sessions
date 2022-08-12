@@ -145,7 +145,11 @@ export class Video implements ScreenshotCallbackCommand {
 			const canvas = await this.createOffscreenCanvas(filePath, maxWidth, maxHeight);
 			return {canvas, name: `screenshot_${image.imageIndex}.jpg`, timestamp: image.timestamp, width, height};
 		}));
-
+		
+		if (session.events.inputEvents === undefined) {
+			console.log("session.events.inputEvents undefined, skipping")
+			return
+		}
 		const touches = session.events.inputEvents.filter((event: InputEvent) => {
 			var eventType = Video.EVENT_TYPE_TOUCH;
 			if (typeof(event.t) != "undefined") {

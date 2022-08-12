@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -14,7 +18,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -32,17 +36,19 @@ exports.sessions = exports.makeProjectPredicates = exports.assertNoMissingParams
 const fs = __importStar(require("fs"));
 const request = require('request');
 const NodeRSA = require('node-rsa');
-exports.getEndpoint = (options) => {
+const getEndpoint = (options) => {
     const endpoint = options.endpoint();
     if (endpoint.indexOf(":") >= 0 || endpoint.indexOf("/") >= 0) {
         throw new Error("Invalid value for option \"endpoint\". Please supply only domain name, for example: \"mycompany.testfairy.com\".");
     }
     return endpoint;
 };
-exports.isEmpty = (obj) => {
+exports.getEndpoint = getEndpoint;
+const isEmpty = (obj) => {
     return Object.keys(obj).length === 0;
 };
-exports.getRsaEncryptionKey = (options) => {
+exports.isEmpty = isEmpty;
+const getRsaEncryptionKey = (options) => {
     if (!options.contains('rsa-private-key')) {
         return null;
     }
@@ -54,7 +60,8 @@ exports.getRsaEncryptionKey = (options) => {
     const rsa = new NodeRSA(rsaPrivateKey, 'pkcs1-private-pem', { encryptionScheme: 'pkcs1' });
     return rsa;
 };
-exports.assertNoMissingParams = (options, required) => {
+exports.getRsaEncryptionKey = getRsaEncryptionKey;
+const assertNoMissingParams = (options, required) => {
     for (var i = 0; i < required.length; i++) {
         var k = required[i];
         if (!(k in options)) {
@@ -65,31 +72,33 @@ exports.assertNoMissingParams = (options, required) => {
         throw new Error("Must provide at least one of --logs, --screenshots or --video");
     }
 };
-const thisMonthString = () => {
-    const date = new Date();
-    const month = date.getUTCMonth() + 1;
-    const monthAsString = (month < 10) ? "0" + month.toString() : month.toString();
-    const year = date.getUTCFullYear();
-    return `${year}-${monthAsString}-01`;
-};
-exports.makeProjectPredicates = (options) => {
+exports.assertNoMissingParams = assertNoMissingParams;
+// const thisMonthString = () => {
+// 	const date = new Date();
+// 	const month = date.getUTCMonth() + 1;
+// 	const monthAsString = (month < 10) ? "0" + month.toString() : month.toString();
+// 	const year = date.getUTCFullYear();
+// 	return `${year}-${monthAsString}-01`;
+// };
+const makeProjectPredicates = (options) => {
     const predicates = [{
             "type": "number",
             "attribute": "project_id",
             "comparison": "eq",
             "value": options.projectId()
         }];
-    if (!options.contains('all-time')) {
-        const value = options.contains("this-month") ? thisMonthString() : "now-24h/h";
-        predicates.push({
-            "type": "date",
-            "attribute": "recorded_at",
-            "comparison": "gt",
-            value
-        });
-    }
+    // if (!options.contains('all-time')) {
+    // 	const value = options.contains("this-month") ? thisMonthString() : "now-24h/h";
+    // 	predicates.push({
+    // 		"type":"date",
+    // 		"attribute":"recorded_at",
+    // 		"comparison":"gt",
+    // 		value
+    // 	});
+    // }
     return predicates;
 };
+exports.makeProjectPredicates = makeProjectPredicates;
 const searchSessions = (predicates, options) => __awaiter(void 0, void 0, void 0, function* () {
     const endpoint = options.key('endpoint');
     const auth = options.auth();
@@ -142,7 +151,7 @@ const fetchSessionData = (session, options) => __awaiter(void 0, void 0, void 0,
         });
     });
 });
-exports.sessions = (predicates, options) => __awaiter(void 0, void 0, void 0, function* () {
+const sessions = (predicates, options) => __awaiter(void 0, void 0, void 0, function* () {
     const sessionData = yield searchSessions(predicates, options);
     if (sessionData.status === 'fail') {
         throw new Error(sessionData.message);
@@ -153,4 +162,5 @@ exports.sessions = (predicates, options) => __awaiter(void 0, void 0, void 0, fu
     });
     return Promise.all(events);
 });
+exports.sessions = sessions;
 //# sourceMappingURL=helpers.js.map

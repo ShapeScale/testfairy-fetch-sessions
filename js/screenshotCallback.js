@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -14,7 +18,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -146,6 +150,10 @@ class Video {
                 const canvas = yield this.createOffscreenCanvas(filePath, maxWidth, maxHeight);
                 return { canvas, name: `screenshot_${image.imageIndex}.jpg`, timestamp: image.timestamp, width, height };
             })));
+            if (session.events.inputEvents === undefined) {
+                console.log("session.events.inputEvents undefined, skipping");
+                return;
+            }
             const touches = session.events.inputEvents.filter((event) => {
                 var eventType = Video.EVENT_TYPE_TOUCH;
                 if (typeof (event.t) != "undefined") {
@@ -180,9 +188,9 @@ class Video {
     }
     createOffscreenCanvas(downloadPath, canvasWidth, canvasHeight) {
         return __awaiter(this, void 0, void 0, function* () {
-            const offScreenCanvas = canvas_1.createCanvas(canvasWidth, canvasHeight);
+            const offScreenCanvas = (0, canvas_1.createCanvas)(canvasWidth, canvasHeight);
             const context = offScreenCanvas.getContext("2d");
-            const image = yield canvas_1.loadImage(downloadPath);
+            const image = yield (0, canvas_1.loadImage)(downloadPath);
             const widthOffset = (offScreenCanvas.width - image.width) >> 1;
             const heightOffset = (offScreenCanvas.height - image.height) >> 1;
             context.drawImage(image, widthOffset, heightOffset);
@@ -214,7 +222,7 @@ class Video {
     }
     copyTouchCanvas(canvas, event, platform, deviceExtra) {
         const offScreenCanvas = canvas.canvas;
-        const copy = canvas_1.createCanvas(offScreenCanvas.width, offScreenCanvas.height);
+        const copy = (0, canvas_1.createCanvas)(offScreenCanvas.width, offScreenCanvas.height);
         let widthOffset = (offScreenCanvas.width >> 1) - (canvas.width >> 1);
         let heightOffset = (offScreenCanvas.height >> 1) - (canvas.height >> 1);
         const context = copy.getContext("2d");

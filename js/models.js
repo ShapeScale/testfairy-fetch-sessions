@@ -10,7 +10,7 @@ class Options {
         this.agent = new http.Agent({ maxSockets: 5, keepAlive: true });
     }
     containsHelp() {
-        return helpers_1.isEmpty(this.options) || this.options.help;
+        return (0, helpers_1.isEmpty)(this.options) || this.options.help;
     }
     containsVersion() {
         return this.options.version;
@@ -19,7 +19,7 @@ class Options {
         return this.options[key] !== undefined;
     }
     key(name) {
-        helpers_1.assertNoMissingParams(this.options, [name]);
+        (0, helpers_1.assertNoMissingParams)(this.options, [name]);
         return this.options[name];
     }
     auth() {
@@ -34,6 +34,9 @@ class Options {
     }
     projectId() {
         return this.key('project-id');
+    }
+    daysSince() {
+        return parseInt(this.key('days-since'));
     }
 }
 exports.Options = Options;
