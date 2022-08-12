@@ -39,7 +39,6 @@ class SessionsTool {
 		console_stamp(console, 'HH:MM:ss.l');
 
 		console.log("Fetching new sessions...");
-		
 
 		let daysSince = options.contains('days-since') ? options.daysSince() : 1;
 
@@ -52,7 +51,7 @@ class SessionsTool {
 					type: 'date',
 					attribute: 'recorded_at',
 					comparison: 'gt',
-					value: `now-${start*24}h/h`
+					value: `now-${start * 24}h/h`
 				},
 
 			)
@@ -61,21 +60,26 @@ class SessionsTool {
 					type: 'date',
 					attribute: 'recorded_at',
 					comparison: 'lt',
-					value: `now-${end*24}h/h`
+					value: `now-${end * 24}h/h`
 				}
 			)
-			let sessions = await fetchSessions(predicates, options);
-			if (sessions.length === 0) {
-				console.log("No new sessions found");
+			try {
+				let sessions = await fetchSessions(predicates, options);
+				if (sessions.length === 0) {
+					console.log("No new sessions found");
+				}
+				if (options.contains('logs')) {
+					console.log("Fetching logs");
+					await logs(sessions, options);
+				}
+				if (options.contains('screenshots') || options.contains('video')) {
+					console.log("Fetching session screenshots");
+					await screenshots(sessions, options);
+				}
+			} catch (error) {
+				console.log(error)
 			}
-			if (options.contains('logs')) {
-				console.log("Fetching logs");
-				await logs(sessions, options);
-			}
-			if (options.contains('screenshots') || options.contains('video')) {
-				console.log("Fetching session screenshots");
-				await screenshots(sessions, options);
-			}
+
 		}
 
 	}
@@ -93,5 +97,5 @@ class SessionsTool {
 }
 
 const tool = new SessionsTool();
-tool.run().catch((error: Error) => { console.error(error.message); error.stack })
+tool.run().catch((error: Error) => { console.log(error.message); })
 
