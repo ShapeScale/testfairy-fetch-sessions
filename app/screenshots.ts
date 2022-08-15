@@ -35,7 +35,7 @@ const downloadImages = async (data: SessionData, options: Options) => {
 	const screenshots = data.events.screenshotEvents || [];
 	const rootPath = "testfairy-sessions";
 	const dirPath = rootPath + data.url;
-	fs.mkdirSync(dirPath, {recursive: true});
+	fs.mkdirSync(dirPath, { recursive: true });
 
 	const downloads = screenshots.map(async (event: ScreenshotEvent, index: number) => {
 		const filePath = dirPath + "/" + formatTimestamp(event.ts) + ".jpg";
@@ -66,15 +66,14 @@ const downloadImages = async (data: SessionData, options: Options) => {
 
 export const screenshots = async (sessions: SessionData[], options: Options) => {
 	const callback = options.contains('video') ? new Video(options) : new NoOp();
-	const downloads = sessions
-		.map(async (session) => {
-			const downloaded = await downloadImages(session, options);
-			return {downloaded, session};
-		})
-		.map(async (promise) => {
-			const {downloaded, session} = await promise;
-			return await callback.onDownload(downloaded, session);
-		})
-
-	await Promise.all(downloads);
+	for (var i = 0; i < sessions.length; i++) {
+		let session = sessions[i]
+		try {
+			let downloaded = await downloadImages(session, options);
+			await callback.onDownload(downloaded, session);
+		} catch (error) {
+			console.log(error)
+			continue
+		}
+	}
 }

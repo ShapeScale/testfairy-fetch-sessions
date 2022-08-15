@@ -97,16 +97,17 @@ const downloadImages = (data, options) => __awaiter(void 0, void 0, void 0, func
 });
 const screenshots = (sessions, options) => __awaiter(void 0, void 0, void 0, function* () {
     const callback = options.contains('video') ? new screenshotCallback_1.Video(options) : new screenshotCallback_1.NoOp();
-    const downloads = sessions
-        .map((session) => __awaiter(void 0, void 0, void 0, function* () {
-        const downloaded = yield downloadImages(session, options);
-        return { downloaded, session };
-    }))
-        .map((promise) => __awaiter(void 0, void 0, void 0, function* () {
-        const { downloaded, session } = yield promise;
-        return yield callback.onDownload(downloaded, session);
-    }));
-    yield Promise.all(downloads);
+    for (var i = 0; i < sessions.length; i++) {
+        let session = sessions[i];
+        try {
+            let downloaded = yield downloadImages(session, options);
+            yield callback.onDownload(downloaded, session);
+        }
+        catch (error) {
+            console.log(error);
+            continue;
+        }
+    }
 });
 exports.screenshots = screenshots;
 //# sourceMappingURL=screenshots.js.map

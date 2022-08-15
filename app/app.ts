@@ -63,23 +63,18 @@ class SessionsTool {
 					value: `now-${end * 24}h/h`
 				}
 			)
-			try {
-				let sessions = await fetchSessions(predicates, options);
-				if (sessions.length === 0) {
-					console.log("No new sessions found");
-				}
-				if (options.contains('logs')) {
-					console.log("Fetching logs");
-					await logs(sessions, options);
-				}
-				if (options.contains('screenshots') || options.contains('video')) {
-					console.log("Fetching session screenshots");
-					await screenshots(sessions, options);
-				}
-			} catch (error) {
-				console.log(error)
+			let sessions = await fetchSessions(predicates, options);
+			if (sessions.length === 0) {
+				console.log("No new sessions found");
 			}
-
+			if (options.contains('logs')) {
+				console.log("Fetching logs");
+				await logs(sessions, options);
+			}
+			if (options.contains('screenshots') || options.contains('video')) {
+				console.log("Fetching session screenshots");
+				await screenshots(sessions, options);
+			}
 		}
 
 	}

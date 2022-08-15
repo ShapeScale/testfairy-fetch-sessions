@@ -62,22 +62,17 @@ class SessionsTool {
                     comparison: 'lt',
                     value: `now-${end * 24}h/h`
                 });
-                try {
-                    let sessions = yield (0, helpers_1.sessions)(predicates, options);
-                    if (sessions.length === 0) {
-                        console.log("No new sessions found");
-                    }
-                    if (options.contains('logs')) {
-                        console.log("Fetching logs");
-                        yield (0, logs_1.logs)(sessions, options);
-                    }
-                    if (options.contains('screenshots') || options.contains('video')) {
-                        console.log("Fetching session screenshots");
-                        yield (0, screenshots_1.screenshots)(sessions, options);
-                    }
+                let sessions = yield (0, helpers_1.sessions)(predicates, options);
+                if (sessions.length === 0) {
+                    console.log("No new sessions found");
                 }
-                catch (error) {
-                    console.log(error);
+                if (options.contains('logs')) {
+                    console.log("Fetching logs");
+                    yield (0, logs_1.logs)(sessions, options);
+                }
+                if (options.contains('screenshots') || options.contains('video')) {
+                    console.log("Fetching session screenshots");
+                    yield (0, screenshots_1.screenshots)(sessions, options);
                 }
             }
         });
